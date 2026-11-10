@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="TravelBloom - Discover beautiful destinations around the world.">
+
+    <title>TravelBloom</title>
+
+    <style>
+        :root {
+            --navy: #092c3b;
+            --teal: #0d817c;
+            --white: #fff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            min-height: 100%;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            color: var(--white);
+
+            background:
+                linear-gradient(rgba(3, 28, 43, .30), rgba(3, 28, 43, .38)),
+                url("https://images.unsplash.com/photo-1518391846015-55a9cc003b25?auto=format&fit=crop&w=2000&q=85");
+
+            background-position: center;
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+
+        /* Navigation Bar */
+
+        .navbar {
+            min-height: 68px;
+            padding: 9px 3%;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 22px;
+
+            background: rgba(5, 39, 53, .96);
+
+            position: relative;
+            z-index: 5;
+        }
+
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .nav-links a:hover {
+            color: #7fe0d5;
+        }
+
+        /* Search Bar */
+
+        .search-area {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 7px 9px 7px 20px;
+
+            background: white;
+            border-radius: 32px;
+
+            min-width: 390px;
+        }
+
+        .search-area input {
+            flex: 1;
+            min-width: 80px;
+
+            border: 0;
+            outline: 0;
+
+            font-size: 14px;
+            color: #222;
+        }
+
+        .search-icon {
+            font-size: 18px;
+        }
+
+        button {
+            cursor: pointer;
+            border: 0;
+        }
+
+        .search-area button,
+        .primary-button {
+            color: white;
+            background: var(--teal);
+
+            border-radius: 12px;
+            padding: 9px 17px;
+
+            font-weight: 600;
+        }
+
+        .search-area button:hover,
+        .primary-button:hover {
+            background: #096d69;
+        }
+
+        /* Page Layout */
+
+        main {
+            min-height: calc(100vh - 68px);
+        }
+
+        .page {
+            display: none;
+            min-height: calc(100vh - 68px);
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Social Media Icons */
+
+        .socials {
+            position: fixed;
+            left: 18px;
+            top: 43%;
+
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+
+            z-index: 2;
+        }
+
+        .socials a {
+            color: white;
+            text-decoration: none;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        /* Home Page */
+
+        .home-content {
+            padding: 10vh 7% 50px;
+            max-width: 790px;
+        }
+
+        .home-content h1 {
+            font-size: clamp(34px, 4vw, 50px);
+            line-height: 1.12;
+
+            margin: 24px 0 14px;
+
+            text-transform: uppercase;
+            max-width: 470px;
+        }
+
+        .intro {
+            max-width: 620px;
+
+            font-size: 16px;
+            line-height: 1.42;
+
+            margin: 0 0 18px;
+
+            text-shadow: 0 1px 3px #142d3a;
+        }
+
+        .book-button {
+            background: #075c56;
+            color: white;
+
+            padding: 12px 22px;
+            font-weight: bold;
+        }
+
+        /* Search Results */
+
+        .results-wrap {
+            padding: 25px 8% 55px;
+            color: #092c3b;
+        }
+
+        .results-wrap h2 {
+            color: #ef7900;
+            font-size: 30px;
+            margin: 8px 0 20px;
+        }
+
+        .results-grid {
+            display: grid;
+
+            grid-template-columns: repeat(auto-fit, minmax(260px, 350px));
+
+            gap: 24px;
+            align-items: stretch;
+        }
+
+        .result-card {
+            background: white;
+            color: #092c3b;
+
+            border-radius: 8px;
+            padding: 9px;
+
+            box-shadow: 0 5px 18px rgba(0, 0, 0, .25);
+
+            overflow: hidden;
+        }
+
+        .result-card img {
+            width: 100%;
+            height: 200px;
+
+            object-fit: cover;
+
+            border-radius: 6px;
+            display: block;
+        }
+
+        .result-card h3 {
+            font-size: 21px;
+            margin: 8px 4px 3px;
+        }
+
+        .result-card p {
+            margin: 0 4px 8px;
+            line-height: 1.35;
+        }
+
+        .result-card .local-time {
+            color: #0d817c;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .empty-state {
+            color: white;
+            font-size: 17px;
+            text-shadow: 0 1px 3px black;
+        }
+
+        /* About Us Page */
+
+        .about-page {
+            padding: 10px 7% 50px;
+        }
+
+        .about-page h1,
+        .contact-copy h1 {
+            font-size: clamp(42px, 5vw, 68px);
+            margin: 0 0 12px;
+        }
+
+        .about-copy {
+            margin: 0 auto 24px;
+            max-width: 1160px;
+
+            padding: 18px 20px;
+
+            background: rgba(3, 31, 47, .28);
+
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        /* Team Members */
+
+        .team {
+            display: grid;
+
+            grid-template-columns: repeat(4, minmax(150px, 1fr));
+
+            gap: 18px;
+            align-items: center;
+
+            padding: 22px 10px;
+
+            background: rgba(3, 31, 47, .28);
+        }
+
+        .team-heading {
+            font-size: clamp(35px, 4vw, 58px);
+            font-weight: bold;
+        }
+
+        .member {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .avatar {
+            font-size: 35px;
+
+            background: white;
+            color: #0b3345;
+
+            border-radius: 50%;
+
+            width: 48px;
+            height: 48px;
+
+            display: grid;
+            place-items: center;
+
+            margin: 0 auto 10px;
+        }
+
+        .member h3 {
+            margin: 5px 0;
+            font-size: 19px;
+        }
+
+        .member p {
+            margin: 7px 0 12px;
+            font-size: 14px;
+        }
+
+        .role {
+            display: inline-block;
+
+            background: #075c85;
+
+            padding: 8px 20px;
+            border-radius: 22px;
+
+            font-size: 13px;
+        }
+
+        /* Contact Us Page */
+
+        .contact-page {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 35px;
+            align-items: center;
+
+            padding: 7vh 7%;
+        }
+
+        .contact-copy p {
+            font-size: 20px;
+        }
+
+        .contact-form {
+            width: min(100%, 530px);
+
+            justify-self: end;
+
+            padding: 28px;
+
+            background: rgba(3, 31, 47, .35);
+
+            border: 2px solid rgba(255, 255, 255, .65);
+            border-radius: 8px;
+        }
+
+        .contact-form label {
+            display: block;
+            margin: 5px 0 8px;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+
+            margin: 0 0 15px;
+            padding: 12px;
+
+            border: 1px solid rgba(255, 255, 255, .55);
+            border-radius: 6px;
+
+            color: white;
+            background: rgba(255, 255, 255, .08);
+
+            outline: none;
+        }
+
+        .contact-form input::placeholder,
+        .contact-form textarea::placeholder {
+            color: #e6edf1;
+        }
+
+        .contact-form textarea {
+            min-height: 95px;
+            resize: vertical;
+        }
+
+        .contact-form button {
+            width: 100%;
+
+            border-radius: 6px;
+            padding: 13px;
+
+            color: white;
+            background: #0d817c;
+
+            font-weight: bold;
+        }
+
+        .form-status {
+            min-height: 20px;
+            font-size: 14px;
+            margin: 10px 0 0;
+        }
+
+        /* Responsive Design */
+
+        @media (max-width: 850px) {
+
+            .navbar {
+                flex-wrap: wrap;
+            }
+
+            .brand {
+                flex: 1;
+            }
+
+            .nav-links {
+                order: 3;
+                width: 100%;
+
+                gap: 25px;
+                padding: 8px 0 4px;
+            }
+
+            .search-area {
+                min-width: 0;
+                width: min(100%, 440px);
+            }
+
+            .team {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .team-heading {
+                grid-column: 1 / -1;
+                text-align: center;
+            }
+
+            .contact-page {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-form {
+                justify-self: stretch;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 520px) {
+
+            .brand-name {
+                font-size: 24px;
+            }
+
+            .search-area {
+                padding-left: 12px;
+            }
+
+            .search-area button {
+                padding: 9px 11px;
+            }
+
+            .nav-links {
+                gap: 16px;
+            }
+
+            .nav-links a {
+                font-size: 14px;
+            }
+
+            .home-content {
+                padding: 8vh 8% 40px 14%;
+            }
+
+            .socials {
+                left: 8px;
+                gap: 17px;
+            }
+
+            .team {
+                grid-template-columns: 1fr;
+            }
+
+            .about-page {
+                padding-left: 9%;
+                padding-right: 6%;
+            }
+
+            .contact-page {
+                padding-left: 9%;
+                padding-right: 6%;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+
+    <header class="navbar">
+
+        <nav class="nav-links" aria-label="Main navigation">
+
+            <a href="#home" data-page="home">Home</a>
+
+            <a href="#about" data-page="about">About Us</a>
+
+            <a href="#contact" data-page="contact">Contact Us</a>
+
+        </nav>
+
+        <!-- Search Bar -->
+
+        <form class="search-area" id="searchForm" role="search">
+
+            <input
+                id="searchInput"
+                type="search"
+                placeholder="Enter a destination or keyword"
+                aria-label="Destination or keyword"
+            >
+
+            <span class="search-icon" aria-hidden="true">🔍</span>
+
+            <button type="submit">Search</button>
+
+            <button type="button" id="clearButton">Clear</button>
+
+        </form>
+
+    </header>
+
+
+    <!-- Social Media Links -->
+
+    <aside class="socials" aria-label="Social media links">
+
+        <a href="https://twitter.com/"
+           aria-label="Twitter"
+           target="_blank"
+           rel="noreferrer">♥</a>
+
+        <a href="https://facebook.com/"
+           aria-label="Facebook"
+           target="_blank"
+           rel="noreferrer">f</a>
+
+        <a href="https://instagram.com/"
+           aria-label="Instagram"
+           target="_blank"
+           rel="noreferrer">◎</a>
+
+        <a href="https://youtube.com/"
+           aria-label="YouTube"
+           target="_blank"
+           rel="noreferrer">▶</a>
+
+    </aside>
+
+
+    <main>
+
+        <!-- Home Page -->
+
+        <section class="page active" id="home">
+
+            <div class="home-content">
+
+                <h1>
+                    Explore Dream<br>
+                    Destination
+                </h1>
+
+                <p class="intro">
+
+                    The Travel Recommendation App helps users explore
+                    popular travel destinations through an interactive
+                    and user-friendly interface.
+
+                    Search for beaches, temples, countries, or a specific
+                    country name to discover places with images and
+                    descriptions.
+
+                    Find inspiration for your next adventure and start
+                    planning your trip.
+
+                </p>
+
+                <button class="book-button" type="button" id="bookButton">
+                    Book Now
+                </button>
+
+            </div>
+
+
+            <!-- Search Results -->
+
+            <section
+                class="results-wrap"
+                id="resultsSection"
+                hidden
+                aria-live="polite"
+            >
+
+                <h2>Search Results</h2>
+
+                <div class="results-grid" id="resultsGrid"></div>
+
+            </section>
+
+        </section>
+
+
+        <!-- About Us Page -->
+
+        <section class="page about-page" id="about">
+
+            <h1>ABOUT US</h1>
+
+            <div class="about-copy">
+
+                Welcome to TravelBloom! We are a team of passionate
+                individuals dedicated to helping people discover
+                memorable destinations around the world.
+
+                Our mission is to make travel inspiration simple,
+                accessible, and enjoyable.
+
+                <br>
+
+                Our values include integrity, innovation, customer
+                satisfaction, and teamwork.
+
+                We believe in putting travelers first and helping
+                them explore the world with confidence.
+
+                <br>
+
+                Feel free to explore our website and find your
+                next destination!
+
+            </div>
+
+
+            <!-- Team Members -->
+
+            <div class="team">
+
+                <div class="team-heading">
+                    Our<br>
+                    Team
+                </div>
+
+
+                <article class="member">
+
+                    <div class="avatar">●</div>
+
+                    <h3>John Doe</h3>
+
+                    <p>
+                        Responsible for overall company
+                        strategy and vision.
+                    </p>
+
+                    <span class="role">CEO</span>
+
+                </article>
+
+
+                <article class="member">
+
+                    <div class="avatar">●</div>
+
+                    <h3>Celina Thomas</h3>
+
+                    <p>
+                        Leads the technical and operations team.
+                    </p>
+
+                    <span class="role">Team Lead</span>
+
+                </article>
+
+
+                <article class="member">
+
+                    <div class="avatar">●</div>
+
+                    <h3>Mike Tyson</h3>
+
+                    <p>
+                        Manages project delivery and
+                        client relationships.
+                    </p>
+
+                    <span class="role">Delivery Head</span>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- Contact Us Page -->
+
+        <section class="page contact-page" id="contact">
+
+            <div class="contact-copy">
+
+                <h1>CONTACT US</h1>
+
+                <p>Get in touch</p>
+
+            </div>
+
+
+            <!-- Contact Form -->
+
+            <form class="contact-form" id="contactForm">
+
+                <label for="contactName">Name</label>
+
+                <input
+                    id="contactName"
+                    name="name"
+                    type="text"
+                    placeholder="Enter your name"
+                    required
+                >
+
+
+                <label for="contactEmail">Email</label>
+
+                <input
+                    id="contactEmail"
+                    name="email"
+                    type="email"
+                    placeholder="Enter your email"
+                    required
+                >
+
+
+                <label for="contactMessage">Message</label>
+
+                <textarea
+                    id="contactMessage"
+                    name="message"
+                    placeholder="Enter your message"
+                    required
+                ></textarea>
+
+
+                <button type="submit">Submit</button>
+
+                <p
+                    class="form-status"
+                    id="formStatus"
+                    role="status"
+                ></p>
+
+            </form>
+
+        </section>
+
+    </main>
+
+
+    <!-- External JavaScript File -->
+
+    <script src="travel_recommendation.js" defer></script>
+
+</body>
+
+</html>
